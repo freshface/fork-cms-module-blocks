@@ -1,0 +1,93 @@
+{% extends '/Layout/Templates/base.html.twig' %}
+
+{% block actionbar %}
+  <div class="btn-toolbar pull-right">
+    <div class="btn-group" role="group">
+       {{ macro.buttonIcon( geturl('add'), 'plus-square', 'lbl.Add'|trans|ucfirst) }}
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+
+
+
+        <div class="row fork-module-content">
+        <div class="col-md-12">
+          {% form filter %}
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div class="row">
+
+
+                <div class="col-md-12">
+
+                  <div class="form-group">
+                    <label for="value" class="control-label">
+                      {{ 'lbl.Value'|trans|ucfirst }}
+                    </label>
+                    {% form_field value %} {% form_field_error value %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-footer">
+              <div class="btn-toolbar">
+                <div class="btn-group pull-right">
+                  <button id="search" class="btn btn-primary" type="submit" name="search">
+                    <span class="fa fa-refresh"></span>&nbsp;
+                    {{ 'lbl.UpdateFilter'|trans|ucfirst }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endform %}
+        </div>
+      </div>
+
+
+
+    {% if dataGridBlocksDraft %}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="content-block content-block-pb">
+          <div class="content-title">
+            <p>{{ 'lbl.Drafts'|trans|ucfirst }}</p>
+          </div>
+          <div class="table-responsive">
+            {{ dataGridBlocksDraft|raw }}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+   {% if dataGridBlocks %}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="content-block content-block-pb">
+          <div class="content-title">
+            <p>{{ 'lbl.PublishedBlocks'|trans|ucfirst }}</p>
+          </div>
+          <div class="table-responsive">
+            {{ dataGridBlocks|raw }}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if  not dataGridBlocks  and  not dataGridBlocksDraft %}
+    <div class="row fork-module-content">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <p>{{ 'msg.NoItems'|trans }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+{% endblock %}

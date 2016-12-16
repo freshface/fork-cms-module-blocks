@@ -1,0 +1,217 @@
+{% extends '/Layout/Templates/base.html.twig' %}
+
+{% block actionbar %}{% endblock %}
+
+{% block content %}
+
+  {% form edit %}
+
+    {% form_field id %}
+
+    <div class="row fork-module-content">
+      <div class="col-md-8">
+        <div role="tabpanel">
+          <ul class="nav nav-tabs" role="tablist">
+            {% for language in languages %}
+              <li role="presentation" {% if loop.first %} class="active" {% endif %}>
+                <a href="#tab{{language.abbreviation|ucfirst}}" aria-controls="tab{{language.abbreviation|ucfirst}}" role="tab" data-toggle="tab">{{language.label}}</a>
+              </li>
+            {% endfor %}
+
+
+
+          </ul>
+          </div>
+
+          <div class="tab-content">
+
+          {% for language in languages %}
+
+            <div role="tabpanel" data-language="{{language.abbreviation|ucfirst}}" class="tab-pane js-tab-lang {% if loop.first %} active {% endif %}" id="tab{{language.abbreviation|ucfirst}}">
+
+            <div class="row">
+
+
+                <div class="col-md-12">
+
+                    <div class="form-group">
+                        <label for="name{{language.abbreviation|ucfirst}}" class="control-label">
+                            {{ 'lbl.Name'|trans|ucfirst }} {{ macro.required }}
+                        </label>
+                        {{ language.name_field|raw}}
+
+                        {% if language.name_errors %}
+                            <p><span class="formError">{{ language.name_errors  }}</span></p>
+                        {% endif %}
+
+
+                         </div>
+
+
+                    <div class="panel panel-default panel-editor">
+                      <div class="panel-heading">
+                        <p>{{ 'lbl.MainContent'|trans|ucfirst }}</p>
+                      </div>
+                      <div class="panel-body">
+                        {{ language.description_field|raw}}
+                      </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="link{{language.abbreviation|ucfirst}}" class="control-label">
+                            {{ 'lbl.Link'|trans|ucfirst }}
+                        </label>
+
+
+
+                        <div class="form-group ">
+                            {{ language.link_field|raw}}
+                        </div>
+
+                        <div class="form-group last">
+                            {{ language.pages_field|raw}}
+                        </div>
+
+                        {% if language.link_errors %}
+                            <p><span class="formError">{{ language.link_errors  }}</span></p>
+                        {% endif %}
+                    </div>
+
+                </div>
+                </div>
+
+            </div>
+          {% endfor %}
+
+
+
+
+
+
+
+         </div>
+
+
+      </div>
+
+       <div class="col-md-4">
+
+           <div class="panel panel-default">
+              <div class="panel-heading">
+                <p>{{ 'lbl.Status'|trans|ucfirst }}</p>
+              </div>
+              <div class="panel-body">
+                <div class="form-group">
+                  <ul class="list-unstyled">
+                    {% for _itr_4 in hidden %}
+                      <li class="radio">
+                        <label for="{{ _itr_4.id }}">{{ _itr_4.rbtHidden|raw }} {{ _itr_4.label }}</label>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                <div class="form-group last">
+                  <label for="publishOnDate" class="control-label">{{ 'lbl.PublishOn'|trans|ucfirst }}</label>
+                  {% form_field publish_on_date %} {% form_field_error publish_on_date %}
+                  <label for="publishOnTime" class="control-label">{{ 'lbl.At'|trans }}</label>
+                  {% form_field publish_on_time %} {% form_field_error publish_on_time %}
+                </div>
+              </div>
+            </div>
+
+
+            <div class="panel panel-default">
+               <div class="panel-heading">
+                 <p>
+                     <label for="image">{{ 'lbl.Image'|trans|ucfirst }}</label>
+                 </p>
+               </div>
+               <div class="panel-body"  style="overflow:hidden;">
+                 {% form_field image %} {% form_field_error image %}
+
+
+                 {% if record.image %}
+
+                    <hr>
+                    <p>
+                        <img src="{{ imageUrl }}" style="max-width:200px;max-height:200px">
+                    </p>
+                    <hr>
+                    <p>
+                        <label for="deleteImage">
+                            {% form_field delete_image %} {{ 'lbl.Delete'|trans }}
+                        </label>
+                    </p>
+                {% endif %}
+
+               </div>
+             </div>
+
+             {% if templates %}
+             <div class="panel panel-default">
+                <div class="panel-heading">
+                  <p>
+                      <label for="template">{{ 'lbl.Template'|trans|ucfirst }}</label>
+                  </p>
+                </div>
+                <div class="panel-body">
+                  {% form_field template %} {% form_field_error template %}
+                </div>
+              </div>
+              {% endif %}
+
+
+       </div>
+
+    </div>
+
+
+<div class="row fork-module-actions">
+  <div class="col-md-12">
+    <div class="btn-toolbar">
+      <div class="btn-group pull-left" role="group">
+          <button type="button" class="btn btn-danger" id="blog-delete" data-toggle="modal" data-target="#confirmDelete">
+            <span class="fa fa-trash-o"></span>
+            {{ 'lbl.Delete'|trans|ucfirst }}
+          </button>
+      </div>
+      <div class="btn-group pull-right" role="group">
+        <a href="#" id="saveAsDraft" class="btn btn-default">
+          <span class="fa fa-file-o"></span>{{ 'lbl.SaveDraft'|trans|ucfirst }}
+        </a>
+        <button id="editButton" type="submit" name="edit" class="btn btn-primary">
+          <span class="fa fa-floppy-o"></span>{{ 'lbl.Save'|trans|ucfirst }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="blog-delete" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="modal-title h4">{{ 'lbl.Delete'|trans|ucfirst }}</span>
+        </div>
+        <div class="modal-body">
+          <p>{{ 'msg.ConfirmDeleteItem'|trans }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            <span class="fa fa-times"></span>{{ 'lbl.Cancel'|trans|ucfirst }}
+          </button>
+          <a href="{{ geturl('delete') }}&amp;id={{ record.id }}" class="btn btn-danger">
+            <span class="fa fa-trash"></span>{{ 'lbl.Delete'|trans|ucfirst }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  {% endform %}
+
+{% endblock %}
